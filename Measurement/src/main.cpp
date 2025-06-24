@@ -49,7 +49,7 @@ void setup() {
 
   Serial.print("Thrust: ");
   Serial.print(thrust);
-  Serial.println(" kg");
+  Serial.println(" N");
 }
 
 void loop() {
@@ -77,7 +77,7 @@ void loop() {
   Serial.print(time);
   Serial.print("\n");
 
-  delay(50);
+  delay(10);
 }
 
 // put function definitions here:
@@ -98,7 +98,7 @@ float get_thrust(void) {
   } else {
     Serial.println("HX711 not found.");
   }
-  return raw/73324.53-3.3542; //calibrated using dumbells
+  return (raw/73324.53-3.3542)*9.8; //calibrated using dumbells
 }
 
 void zero_press(void) {
