@@ -56,12 +56,17 @@ void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() > 0) {
     String mode = Serial.readString();
+
+    if (mode == "zero") {
+      zero_press();
+    }
   }
+
+  float time = millis()*0.001;
+
   temperature = get_temp();
   pressure = get_press();
   thrust = get_thrust();
-
-  float time = millis()*0.001;
 
   Serial.print(temperature);
   Serial.print(",");
@@ -72,22 +77,18 @@ void loop() {
   Serial.print(time);
   Serial.print("\n");
 
-  if (time - ignition_time>=2.5){
-    digitalWrite(IG_CH1, LOW);
-  }
-
-    delay(50);
+  delay(50);
 }
 
 // put function definitions here:
 float get_temp(void) {
   float voltage = analogReadMilliVolts(TS_CH1);
-  return (voltage*0.001 - 1.25) / 0.005;
+  return (voltage*0.001 - 1.25) / 0.005; //calibration factors given on datasheet
 }
 
 float get_press(void) {
   int raw = analogRead(PS_CH1);
-  return (raw-zero)/31.496+1.00;
+  return (raw-zero)/31.496+1.00; //calibrated using compressor
 }
 
 float get_thrust(void) {
@@ -97,7 +98,7 @@ float get_thrust(void) {
   } else {
     Serial.println("HX711 not found.");
   }
-  return raw/73324.53-3.3542;
+  return raw/73324.53-3.3542; //calibrated using dumbells
 }
 
 void zero_press(void) {
