@@ -105,7 +105,7 @@ float get_thrust(void) {
 }
 
 void zero_press(void) {
-  int sum = 0;
+  float sum = 0;
   for(int i = 0; i < 10; i++){
     sum += analogRead(PS_CH1);
   }
@@ -113,9 +113,9 @@ void zero_press(void) {
 }
 
 void zero_load(void) {
-  int sum = 0;
+  float sum = 0;
   for (int i = 0; i < 10; i++){
-    sum += analogRead(PS_CH1);
+    sum += scale.read()/73324.53;
   }
   LC_zero = sum/10.0;
 }
