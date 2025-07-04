@@ -15,7 +15,8 @@ float temperature;
 float pressure;
 float thrust;
 float ignition_time;
-float zero = 1020;
+float PT_zero = 1020;
+float LC_zero = 3.3542;
 bool IG_flag = false;
 
 // put function declarations here:
@@ -23,6 +24,7 @@ float get_temp(void);
 float get_press(void);
 float get_thrust(void);
 void zero_press(void);
+void zero_load(void);
 void ignition(void);
 
 void setup() {
@@ -59,6 +61,7 @@ void loop() {
 
     if (mode == "zero") {
       zero_press();
+      zero_load();
     }
   }
 
@@ -88,7 +91,7 @@ float get_temp(void) {
 
 float get_press(void) {
   int raw = analogRead(PS_CH1);
-  return (raw-zero)/31.496+1.00; //calibrated using compressor
+  return (raw-PT_zero)/31.496+1.00; //calibrated using compressor
 }
 
 float get_thrust(void) {
@@ -98,7 +101,7 @@ float get_thrust(void) {
   } else {
     Serial.println("HX711 not found.");
   }
-  return (raw/73324.53-3.3542)*9.8; //calibrated using dumbells
+  return (raw/73324.53-LC_zero)*9.8; //calibrated using dumbells
 }
 
 void zero_press(void) {
@@ -106,5 +109,13 @@ void zero_press(void) {
   for(int i = 0; i < 10; i++){
     sum += analogRead(PS_CH1);
   }
-  zero = sum/10.0;
+  PT_zero = sum/10.0;
+}
+
+void zero_load(void) {
+  int sum = 0;
+  for (int i = 0; i < 10; i++){
+    sum += analogRead(PS_CH1);
+  }
+  LC_zero = sum/10.0;
 }
